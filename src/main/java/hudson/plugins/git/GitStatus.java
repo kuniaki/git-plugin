@@ -323,24 +323,21 @@ public class GitStatus extends AbstractModelObject implements UnprotectedRootAct
 
             for (final Item project : Jenkins.getInstance().getAllItems()) {
 
-                SCMTriggerItem scmTriggerItem = SCMTriggerItem.SCMTriggerItems.asSCMTriggerItem(project);
+                 String className = project.getClass().getSimpleName();
 
-                 if (scmTriggerItem == null) {
+                 if (className.equals("WorkflowMultiBranchProject")) {
                        String projectName = project.getFullDisplayName();
                        String [] jobs = projectName.split(" » ");
                        if(uri.toString().toLowerCase().contains(jobs[jobs.length-1].toLowerCase())) {
-                               String className = project.getClass().getSimpleName();
-                         if(className.equals("WorkflowMultiBranchProject")) {
-                           try {
+                               try {
                                  WorkflowMultiBranchProject wmp = (WorkflowMultiBranchProject) project;
                                  wmp.scheduleBuild2(0);
                                  result.add(new ScheduledResponseContributor(project));
                                } catch (Exception e) {
-                               e.printStackTrace();
-                            }
-                          }
+                                 e.printStackTrace();
+                              }
+                      }
 
-                       }
 
                  }
             }
